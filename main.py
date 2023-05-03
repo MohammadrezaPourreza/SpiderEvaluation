@@ -10,7 +10,7 @@ from langchain.agents import AgentExecutor
 SPIDER_DATABASE_DIR = "spider"
 llm = OpenAI(
     model_name="text-davinci-003",
-    openai_api_key="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",
+    openai_api_key=#key,
     temperature=0
 )
 def count_tokens(agent, query):
