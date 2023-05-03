@@ -37,17 +37,17 @@ def run(dev_df):
             toolkit=toolkit,
             verbose=False,
         )
-        print(agent_executor.agent.get_allowed_tools())
-        # agent_executor.return_intermediate_steps = True
-        # response = count_tokens(agent_executor,row['question'])
-        # for agent_action in response["intermediate_steps"]:
-        #     if agent_action[0][0] == 'query_sql_db':
-        #         Predicted_SQL = agent_action[0][1]
-        #     else:
-        #         Predicted_SQL = "NO SQL detected"
-        # print(Predicted_SQL)
-        # print("=================================")
-        # results.append([row['question'], Predicted_SQL, row['query'], row['db_id']])
+        # print(agent_executor.agent.get_allowed_tools())
+        agent_executor.return_intermediate_steps = True
+        response = count_tokens(agent_executor,row['question'])
+        for agent_action in response["intermediate_steps"]:
+            if agent_action[0][0] == 'query_sql_db':
+                Predicted_SQL = agent_action[0][1]
+            else:
+                Predicted_SQL = "NO SQL detected"
+        print(Predicted_SQL)
+        print("=================================")
+        results.append([row['question'], Predicted_SQL, row['query'], row['db_id']])
     return results
 def evaluation(results_dir):
     command = "cp " + results_dir + " test-suite-sql-eval-master/results"
@@ -67,7 +67,7 @@ def evaluation(results_dir):
 if __name__ == '__main__':
     dev_df,schema_df = load_database(SPIDER_DATABASE_DIR)
     results = run(dev_df)
-    # df = pd.DataFrame(results, columns=['NLQ', 'PREDICTED SQL', 'GOLD SQL', 'DATABASE'])
-    # df.to_csv("test.csv", index=False)
-    # results = evaluation("test.csv")
-    # print(f"The execution accuracy is {results}")
+    df = pd.DataFrame(results, columns=['NLQ', 'PREDICTED SQL', 'GOLD SQL', 'DATABASE'])
+    df.to_csv("test.csv", index=False)
+    results = evaluation("test.csv")
+    print(f"The execution accuracy is {results}")
